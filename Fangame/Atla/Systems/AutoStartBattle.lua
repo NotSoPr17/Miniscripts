@@ -1,7 +1,8 @@
- MinPlayerStart = 2 --Minimun num of players to start
+ MinPlayerStart = 1 --Minimun num of players to start
  TimerName = "GameStartTimer"
  Countdown = false
-
+ BattleStartGlobalVar = "Game_Started"
+ 
 print("Enoughpeoplescript")
 
 ScriptSupportEvent:registerEvent([=[Game.Start]=], function(e) 
@@ -94,6 +95,8 @@ ScriptSupportEvent:registerEvent([=[minitimer.change]=], function(e)
             
             MiniTimer:hideTimerWnd(playerarr, Timerid, "#G Starting in ")
             Chat:sendSystemMsg("#G Game started!", 0)
+            local result = VarLib2:setGlobalVarByName(5,BattleStartGlobalVar,true)
+
             end
         
         end
