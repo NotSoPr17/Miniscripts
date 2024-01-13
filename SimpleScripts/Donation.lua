@@ -10,13 +10,13 @@ ScriptSupportEvent:registerEvent([=[Developer.BuyItem]=], function(e)
     if itembought == 4098 then 
         
         local _,playernick = Player:getNickname(playerid)
-        Chat:sendSystemMsg( "#B"..playernick .."#cf7ff0d fez uma doação! Muito obrigado!", 0)
+        Chat:sendSystemMsg( "#B"..playernick .."#cf7ff0d Donates, thanks!", 0)
         
         end
     
     if itembought == 4097 then 
         
-        Player:notifyGameInfo2Self(playerid, "Muito obrigado pela sua compra! :)")
+        Player:notifyGameInfo2Self(playerid, "Muchas gracias por su compra! :)")
         
     end
     
