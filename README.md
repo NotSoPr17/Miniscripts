@@ -1,3 +1,8 @@
 # Miniscripts
-Lua scripts for the game Mini world creata
-![image](https://github.com/NotSoPr17/Miniscripts/assets/89939541/5bf515e0-6f6a-4586-9cc5-78accc10cbc9)
+Lua scripts for the game Mini world creata!
+
+The scripts here are made by me, i use most of them in my games, but you can use them freely if you want.
+
+-----
+![image](https://github.com/NotSoPr17/Miniscripts/assets/89939541/df1125e2-a379-4fc9-8f0c-c5b36b94620c)
+
