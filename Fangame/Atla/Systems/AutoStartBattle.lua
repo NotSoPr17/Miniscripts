@@ -1,18 +1,23 @@
+ _,playernum,playerarr = World:getAllPlayers(-1)
  MinPlayerStart = 1 --Minimun num of players to start
  TimerName = "GameStartTimer"
  Countdown = false
- BattleStartGlobalVar = "Game_Started"
+ BattleStartGlobalVar = "Vote_Started"
  
 print("Enoughpeoplescript")
+Chat:sendSystemMsg("Debug message: Min players: 1", MinPlayerStart-1)
 
 ScriptSupportEvent:registerEvent([=[Game.Start]=], function(e) 
     
     print("Battle started init")
     
+    for i,v in ipairs(playerarr) do --Will do a function for this on next version
+        Actor:playSoundEffectById(v, 10717, 100, 1, true)
+    end
+    
     for i=1,math.huge do 
         
-        _,playernum,playerarr = World:getAllPlayers(-1)
-        
+
         if playernum >= MinPlayerStart and Countdown == false then 
             
             print("Enough players to start the game, starting")
@@ -73,9 +78,9 @@ end)
 ScriptSupportEvent:registerEvent([=[minitimer.change]=], function(e) 
         
     local CurTimerId,CurTimerName,CurTimerTime = e['timerid'], e['timername'], e['timertime']
-    print("CurTimerId: ".. CurTimerId)
-    print("CurTimerTime: ".. CurTimerTime)
-    if CurTimerName == TimerName then 
+    --print("CurTimerId: ".. CurTimerId)
+    --print("CurTimerTime: ".. CurTimerTime)
+    if CurTimerName == TimerName then
         
         if CurTimerTime >= 1 then 
             
@@ -94,7 +99,8 @@ ScriptSupportEvent:registerEvent([=[minitimer.change]=], function(e)
             end
             
             MiniTimer:hideTimerWnd(playerarr, Timerid, "#G Starting in ")
-            Chat:sendSystemMsg("#G Game started!", 0)
+            Chat:sendSystemMsg("#G Map voting started!", 0)
+            local amogus = MiniTimer:deleteTimer(Timerid)
             local result = VarLib2:setGlobalVarByName(5,BattleStartGlobalVar,true)
 
             end
