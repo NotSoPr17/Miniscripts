@@ -1,6 +1,39 @@
+--Version 0.3
 
-
---Version 0.2 
+local AllMaplist = {
+    
+    Map1 = {
+        
+        Name = "LAVAMAP",
+        Pos_Heroes = {},
+        Pos_Villains = {}
+        
+    },    
+    Map2 = {
+        
+        Name = "TEMPLEMAP",
+        Pos_Heroes = {},
+        Pos_Villains = {}
+        
+    },    
+    Map3 = {
+        
+        Name = "ICEBERGMAP",
+        Pos_Heroes = {},
+        Pos_Villains = {}
+        
+    },    
+    Map4 = {
+        
+        Name = "EARTHMAP",
+        Pos_Heroes = {},
+        Pos_Villains = {}
+        
+    },
+    
+}
+local AllModeList = {"TDM","LTS","CTF"}
+--------------
 local _,_,PlayerArr = World:getAllPlayers(-1)
 
 local VoteUi = [[7323242840771770665]]
@@ -118,6 +151,52 @@ ScriptSupportEvent:registerEvent([=[minitimer.change]=], function(e)
             end
             
         end
+        
+    end
+    
+end)
+
+-----
+
+local Cur = {}
+local CurM = {}
+local numberOfMaps = 0  -- Variable to keep track of the number of maps
+
+
+for key, value in pairs(AllMaplist) do
+    if type(value) == "table" and value["Name"] then
+        numberOfMaps = numberOfMaps + 1
+    end
+end
+
+print("The numbers of maps in the master array is: ".. numberOfMaps)
+
+ScriptSupportEvent:registerEvent([=[UI.Show]=], function(e) 
+    
+    if e['CustomUI'] == VoteUi then 
+        for i = 1, 4 do 
+            local randomMapIndex = math.random(1, numberOfMaps) --(2) 6 8 10 12, 7 9 11 13
+            table.insert(Cur, AllMaplist["Map" .. randomMapIndex])
+            CurM[#CurM + 1] = AllModeList[math.random(#AllModeList)]
+        end
+        
+        for i, chosenMap in ipairs(Cur) do 
+            print("MapIndex: " .. i .. "\nName of the chosen map: " .. chosenMap["Name"] .. "\nMode chosen for the map: " .. CurM[i])
+        end
+        
+        local k1 = 0
+        
+        for i=6,12,2 do -- [[7323242840771770665_6]], [[7323242840771770665_12]] modo: [[7323242840771770665_7]], [[7323242840771770665_13]]
+            Customui:setText(e['eventobjid'], VoteUi, VoteUi .. "_" .. i .. "", Cur[ (i-(i-1)) + k1 ]["Name"]) -- (6 - (6-1) + n )
+            k1 = k1 + 1
+        end
+        
+        local k2 = 0
+        
+        for i=7,13,2 do 
+            Customui:setText(e['eventobjid'], VoteUi, VoteUi .. "_" .. i .. "", CurM[(i-(i-1)) + k2]) -- (6 - (6-1) + n )
+            k2 = k2 + 1
+        end -- 7 
         
     end
     
