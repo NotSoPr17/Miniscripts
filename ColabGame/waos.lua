@@ -4,7 +4,7 @@ local Rooms = {
         Status = nil, --"False or nil is inactive" true is active
         CurPlayers = {},
         MaxPlayers = 20,
-        x, y, z = {Target },
+        x, y, z = {},
         
         Data = {
             RoundsPassed = 0,       
@@ -16,7 +16,9 @@ local Rooms = {
 
 local CommandList = {
     
-    help = function(e) Chat:sendSystemMsg("Helpcommand",0) end
+    help = function() Chat:sendSystemMsg("Helpcommand",0) end,
+    roomcreate = function(args) end,
+    errortestfunc = function() assert(false, "Error intencional") end
     
 }
 
@@ -122,21 +124,51 @@ ScriptSupportEvent:registerEvent([=[Player.InputContent]=], function(e)
     
     local playerid = e['eventobjid']
     local content = e['content']
-    
-    if #content >= 2 and content:sub(1, 1) == "/" then 
-        local commandsimple = content:sub(2):lower():gsub("[0-9]", "")
 
-        print("Commandsimple with no prefix or digits: " .. commandsimple)
+    if #content >= 2 and content:sub(1, 1) == "/" then 
+        local commandSimple, argsString = content:sub(2):lower():match("(%S+)%s*(.*)")
+
+        print("Commandsimple with no prefix or digits: " .. commandSimple)
+        print("Arguments: " .. argsString)
+
+        local args = {}
+
+        for arg in argsString:gmatch("(%S+)") do
+            if tonumber(arg) then
+                args[#args + 1] = tonumber(arg)
+            else
+                args[#args + 1] = arg
+            end
+        end
 
         for key, func in pairs(CommandList) do 
-            if commandsimple == key then
-                
+            if commandSimple == key then 
                 print("FUNCTION FOUND")
-                func()
+                
+                if #args >= 1 then 
+                
+                sucess, errorstatus = pcall(func, unpack(args) )
+                
+                if not sucess then 
+                    
+                    Chat:sendSystemMsg("#YIf you see this, send a screenshot to @notsopr17 on discord, please :D", 0)
+                    Chat:sendSystemMsg("#ySi ves esto enviale una captura de pantalla a @notsopr17 en discord, por favor #A10", 0)
+                    Chat:sendSystemMsg(""..errorstatus, 0)
+                    error("Error found.")
+                    error(errorstatus)
+                    
+                end
+                
+                
+                else
+                    
+                    func()
+                    
+                end
                 
             end
         end
     end
+
     
 end)
-
