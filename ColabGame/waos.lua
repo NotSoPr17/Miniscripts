@@ -151,9 +151,14 @@ ScriptSupportEvent:registerEvent([=[Player.InputContent]=], function(e)
                 
                 if not sucess then 
                     
-                    Chat:sendSystemMsg("#YIf you see this, send a screenshot to @notsopr17 on discord, please :D", 0)
-                    Chat:sendSystemMsg("#ySi ves esto enviale una captura de pantalla a @notsopr17 en discord, por favor #A10", 0)
-                    Chat:sendSystemMsg(""..errorstatus, 0)
+                    Chat:sendSystemMsg("#YError found \nIf you see this, send a screenshot to @notsopr17 on discord, please #A111", 0)
+                    Chat:sendSystemMsg("#YSe encontro un error \n Si ves esto enviale una captura de pantalla a @notsopr17 en discord, por favor #A111", 0)
+                    
+                    threadpool:wait(3)
+                    
+                    Chat:sendSystemMsg("#RError: ", 0)
+                    Chat:sendSystemMsg(errorstatus, 0)
+                    
                     error("Error found.")
                     error(errorstatus)
                     
