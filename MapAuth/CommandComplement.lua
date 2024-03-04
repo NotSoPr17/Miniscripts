@@ -3,7 +3,7 @@
 
 HasMapAuth es verdadero por defecto
 Aunque esta en mis planes hacer que el script detecte automaticamente si tienes mapauth o no
-Tambien esta en mis planes proximos agregar un comando de ayuda que si funcione bien, no como el actual que no hace mucho
+Tambien esta en mis planes proximos agregar un comando de ayuda que si funcione bien ya que el actual no hace mucho
 
 ]]--
 
@@ -11,7 +11,7 @@ local HasMapAuth = true
 
 function helpcommand(authLvl)
     
-    print("Help command TBA")
+    print("Agregar Help command")
     
 end
 
@@ -48,7 +48,8 @@ CommandList = {
     Mod = {
         
         help = helpcommand,
-        tp = teleportcommand
+        tp = teleportcommand,
+        give = givecommand
     },
 
     Admin = {
@@ -164,6 +165,6 @@ ScriptSupportEvent:registerEvent([=[Player.NewInputContent]=], threadpool:work(f
                 end   
             end
 
-        end --Contenido >= 2
-    end --Tiene mapauth
+        end
+    end 
 end))
