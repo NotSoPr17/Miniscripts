@@ -4,8 +4,6 @@
 HasMapAuth es verdadero por defecto
 Aunque esta en mis planes hacer que el script detecte automaticamente si tienes mapauth o no
 Tambien esta en mis planes proximos agregar un comando de ayuda que si funcione bien, no como el actual que no hace mucho
-{Playerid = playerid, PlayerAuthLevel = playerAuthLevel, Content = content}
-
 
 ]]--
 
@@ -62,8 +60,6 @@ CommandList = {
     }
     
 }
-
--- ... (Código existente)
 
 ScriptSupportEvent:registerEvent("Command.CommandStart", function(e) 
     
