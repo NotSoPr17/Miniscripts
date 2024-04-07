@@ -1,31 +1,190 @@
+--Version 1.1
+-- creado por notsopr17 uid: 75820841
 
 --[[
 
 HasMapAuth es verdadero por defecto
 Aunque esta en mis planes hacer que el script detecte automaticamente si tienes mapauth o no
-Tambien esta en mis planes proximos agregar un comando de ayuda que si funcione bien ya que el actual no hace mucho
 
 ]]--
 
 local HasMapAuth = true
 
-function helpcommand(authLvl)
-    
-    print("Agregar Help command")
+local CommandDescriptions = {
+        help = "Basic Help Command",
+        loadcode = "Loads a script code USE: /loadcode (code:any)",
+        tp = "Teleports you to a coordinate USE: /tp x y z [player who will be teleported (if not given teleports you)]",
+        give = "Gives you or another player a buff",
+        kick = "Kicks a player from the room"
+}
+
+function nickToUid(nick) 
+    local _,_, playerarr = World:getAllPlayers(-1)    
+    for _,v in ipairs(playerarr) do 
+        
+        local _, playernick = Player:getNickname(v)
+        
+        if nick:lower() == playernick:gsub("[%p%c%s]", ""):lower() then
+            print("PlayerNick found")
+            return v
+        end
+        
+    end
     
 end
 
-function teleportcommand(x,y,z, triggerplayer) 
-    Chat:sendSystemMsg("Teleporting!", triggerplayer)
-    Actor:setPosition(triggerplayer, x, y, z)
+function loadcommand(triggerplayer,codetoload) 
+    --loadstring(codetoload)
+    local sucess, err = pcall(LoadLuaScript, codetoload)
+    
+    if not sucess then 
+        print("Error with the load code")
+        print("err: ".. err)
+    else    
+        print("Everything is okay")
+        
+        local s, e = pcall(err)
+        
+        if not s then 
+        
+            print("error found in returned func")    
+            if e then 
+                print("Returned info: ".. e)
+            end
+        else
+            print("no errors found")
+            
+            if e then 
+                print("Returned info: ".. e)
+            end
+            
+        end
+        
+    end
+    
+    --LoadLuaScript(codetoload)
 end
 
-function givecommand(itemid, quantity, triggerplayer)
+function helpcommand(triggerplayer)
+    
+    for k,v in pairs(CommandDescriptions) do 
+        Chat:sendSystemMsg(k ..":".. v .. "\n", triggerplayer)
+    end
+    
+end
+
+function teleportcommand(triggerplayer,x,y,z, tp_player) 
+    
+    local coords = {x,y,z} 
+    
+    for _,v in ipairs(coords) do 
+        
+        if v == v then 
+            
+            if v == math.huge or v == 1/0 then 
+                Chat:sendSystemMsg("A coordinate is an infinite value", triggerplayer)
+                return
+            end
+            
+        else
+            Chat:sendSystemMsg("A coordinate is a NaN value", triggerplayer)
+            return
+        end
+        
+    end
+    
+    print("triggerplayer: ".. triggerplayer)
+    if tp_player then
+        
+        if type(tp_player) == "number" then 
+            print("Teleporting others")
+            Chat:sendSystemMsg("Teleporting!", tp_player)
+            Actor:setPosition(tp_player, x, y, z)
+            return
+        else
+            local playeruid = nickToUid(tp_player)
+            
+            print("Teleporting others (name)")
+            Chat:sendSystemMsg("Teleporting!", playeruid)
+            Actor:setPosition(playeruid, x, y, z)
+        end
+        
+    else
+        print("Teleporting self")
+        Chat:sendSystemMsg("Teleporting!", triggerplayer)
+        Actor:setPosition(triggerplayer, x, y, z)
+        return
+    end
+end
+
+function givecommand(triggerplayer, itemid, quantity, addplayer)
     Chat:sendSystemMsg("Adding items to backpack!", triggerplayer)
-    Backpack:addItem(triggerplayer, itemid, quantity)
+
+     if addplayer then
+        
+        if type(addplayer) == "number" then 
+            print("Give item others others")
+            Chat:sendSystemMsg("Adding items to backpack!", addplayer)
+            Backpack:addItem(addplayer, itemid, quantity)
+            
+            return
+        else
+            local playeruid = nickToUid(addplayer)
+            
+            print("Teleporting others (name)")
+            Chat:sendSystemMsg("Adding items to backpack!", playeruid)
+            Backpack:addItem(playeruid, itemid, quantity)
+            return
+        end
+        
+    else
+        Chat:sendSystemMsg("Adding items to backpack!", triggerplayer)
+        Backpack:addItem(triggerplayer, itemid, quantity)
+        return
+    end
+    
 end
 
-function kickcommand(kickedplayer, triggerplayer) 
+function buffcommand(triggerplayer, buffid, duration, addplayer)
+
+     if addplayer then
+        
+        if type(addplayer) == "number" then 
+            print("Buff others")
+            
+            if tonumber(duration) then
+                Actor:addBuff(addplayer, buffid, 1, duration)
+                Chat:sendSystemMsg("Added a buff!", addplayer)
+            else
+                Chat:sendSystemMsg("Could not add the buff. Duration was not a number", triggerplayer)
+            end
+            
+            return
+        else
+            local playeruid = nickToUid(addplayer)
+            
+            print("Teleporting others (name)")
+            Chat:sendSystemMsg("Adding items to backpack!", playeruid)
+            
+            if tonumber(duration) then
+                Actor:addBuff(addplayer, buffid, 1, duration)
+                Chat:sendSystemMsg("Added a buff!", playeruid)
+            else
+                Chat:sendSystemMsg("Could not add the buff. Duration was not a number", triggerplayer)
+            end
+            
+            return
+        end
+        
+    else
+        Actor:addBuff(triggerplayer, buffid, 1, triggerplayer)
+        Chat:sendSystemMsg("Added a buff!", triggerplayer)
+        return
+    end
+    
+end
+
+function kickcommand(triggerplayer, kickedplayer) 
     
     local _, playernick = Player:getNickname(kickedplayer)
     local _, adminNick = Player:getNickname(triggerplayer)
@@ -49,14 +208,17 @@ CommandList = {
         
         help = helpcommand,
         tp = teleportcommand,
-        give = givecommand
+        give = givecommand,
+        kick = kickcommand
     },
 
     Admin = {
         
         help = helpcommand,
+        loadcode = loadcommand,
         tp = teleportcommand,
         give = givecommand,
+        buff = buffcommand,
         kick = kickcommand
     }
     
@@ -76,13 +238,13 @@ ScriptSupportEvent:registerEvent("Command.CommandStart", function(e)
     
     print("Searching for commands")
     
-    local commandSimple, argsString = content:sub(2):lower():match("(%S+)%s*(.*)")
+    local commandSimple, argsString = content:sub(2):match("(%S+)%s*(.*)")--content:sub(2):lower():match("(%S+)%s*(.*)")
 
     print("Commandsimple with no prefix or digits: " .. commandSimple)
     print("Arguments: " .. argsString)
 
     local args = {}
-
+    
     for arg in argsString:gmatch("(%S+)") do
         if tonumber(arg) then
             args[#args + 1] = tonumber(arg)
@@ -110,7 +272,7 @@ ScriptSupportEvent:registerEvent("Command.CommandStart", function(e)
             
             if #args >= 1 then 
                 print("Executing function with arguments")
-                local success, errorstatus = pcall(func, unpack(args))
+                local success, errorstatus = pcall(func, playerid ,unpack(args))
                 
                 if not success then 
                     print("Error executing function:")
