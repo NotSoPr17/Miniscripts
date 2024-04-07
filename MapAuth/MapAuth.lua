@@ -1,7 +1,8 @@
+local AuthVar = "AuthLevel"
 
--- Aun no esta 100% completo
+-- Ya casi
 
-local MapAuthVer = 1
+local MapAuthVer = 1.1
 
 local maxTime = 60
 
@@ -32,7 +33,7 @@ local AuthPlayers = {
     Admin = {
         Pass = "AdminPass",
         2769323, --UID YeyoCore
-        75820841 --UID NotSoPr17 
+        1075820841 --UID NotSoPr17 
         
     } --Full admin powers
     
@@ -59,6 +60,7 @@ ScriptSupportEvent:registerEvent([=[Game.AnyPlayer.EnterGame]=], function(e)
                     Chat:sendSystemMsg("Found, welcome!", playerid)
                     Chat:sendSystemMsg("Your perm level is: ".. k,playerid)--:gsub("Ids",""), playerid)
                     
+                    --VarLib2:setPlayerVarByName(playerid,4,AuthVar,k)
                     playerAuthLevel = k
                     
                     return
@@ -74,7 +76,7 @@ ScriptSupportEvent:registerEvent([=[Game.AnyPlayer.EnterGame]=], function(e)
     MiniTimer:showTimerWnd({playerid}, timerid,authTextColors.. authLogo .. authName.. " ")	
     MiniTimer:startBackwardTimer(timerid,maxTime,false)
     
-    Actor:playSoundEffectById(playerid, 10713, 100, 1, false)
+    Actor:playSoundEffectById(playerid, 10713, 100, 1, true)
     
     Chat:sendSystemMsg("\n", playerid)
     Chat:sendSystemMsg("#G Please enter the map password!", playerid)
@@ -142,7 +144,6 @@ ScriptSupportEvent:registerEvent([=[Player.NewInputContent]=], function(e)
                         Chat:sendSystemMsg("Found, welcome!", playerid)
                         Chat:sendSystemMsg("Your perm level is: " .. key, playerid)
                         playerAuthLevel = key
-                    
                     
                     else
                         
