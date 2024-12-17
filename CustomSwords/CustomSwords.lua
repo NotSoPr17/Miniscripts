@@ -1,7 +1,7 @@
 
 local swordlist = {
     
-    {id = 4097, dmg = 30, maxdmg = 100, incrementdmg = 10}
+    {id = 4097, dmg = 30, maxdmg = 100, incrementdmg = 10} --example sword
     
 }
 
